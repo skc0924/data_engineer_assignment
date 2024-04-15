@@ -1,7 +1,9 @@
+import csv
 import sqlite3
 
-def sql_solution(db_file_path):
-    try: 
+
+def sql_solution(db_file_path, output_file_path):
+    try:
         connection = sqlite3.connect(db_file_path)
         cursor = connection.cursor()
         cursor.execute('''SELECT c.customer_id AS Customer, c.age AS Age, i.item_name AS Item, SUM(o.quantity) AS Quantity
@@ -15,17 +17,26 @@ def sql_solution(db_file_path):
             ORDER BY c.customer_id, i.item_id
         ''')
         rows = cursor.fetchall()
-        return rows
-        
+
+        with open(output_file_path, 'w', newline='') as csvfile:
+            csv_writer = csv.writer(csvfile, delimiter=';')
+
+            csv_writer.writerow(['Customer', 'Age', 'Item', 'Quantity'])
+
+            csv_writer.writerows(rows)
+
     except Exception as e:
         print(e)
-        
+
     finally:
         cursor.close()
         connection.close()
 
-    
-    return df
+    return rows
 
-db_file_path="C:\\Users\\Admin\\Downloads\\Data Engineer_ETL Assignment.db"
-print(sql_solution(db_file_path))
+
+db_file_path = "C:\\Users\\Admin\\Downloads\\Data Engineer_ETL Assignment.db"
+output_file_path = "C:\\Users\\Admin\\Downloads\\sql_output.csv"
+
+result = sql_solution(db_file_path, output_file_path)
+print(result)

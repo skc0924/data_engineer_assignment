@@ -1,2 +1,2 @@
 def test():
-    return "This is for testing."
+    return "This is for testing purpose."
